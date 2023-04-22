@@ -1,5 +1,6 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,13 +8,37 @@ import java.nio.file.Paths;
 public class Main {
 
     public static void main(String[] args) {
-        int word = 0;
+        final int WORD_COUNT = 2;
+        Set <Character> uniLetters = new HashSet<>();
+
 
         String[] wordsArr = readJson();
-        while (word < wordsArr.length){
+
+        int word = 0;
+        int wCount = 0;
+        while (word < wordsArr.length && wCount < WORD_COUNT){
+            HashMap<Character, Integer> lettersMap = new HashMap<>();
             char[] cWord = wordsArr[word].toCharArray();
-            
+            for(char letter : cWord){
+                lettersMap.compute(letter, (k, v) -> (v == null) ? 1 : v + 1);
+            }
+
+            int sum =0;
+            for (int number : lettersMap.values()){
+                sum += number;
+            }
+
+            if ( (lettersMap.size()%2 == 0) &&  (sum%2 == 0) ){
+                uniLetters.addAll(lettersMap.keySet());
+                wCount++;
+            }
+
+            lettersMap.clear();
             word++;
+        }
+
+        for (Character element : uniLetters){
+            System.out.println(element);
         }
     }
 
